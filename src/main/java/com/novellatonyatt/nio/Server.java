@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Auther: ZHUANGHAOTANG
+ * @Auther: Zhuang HaoTang
  * @Date: 2019/10/26 16:35
  * @Description:
  */
@@ -54,7 +54,7 @@ public class Server {
         }
     }
 
-    public void open() throws IOException {
+    private void start() throws IOException {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocketChannel = createNIOServerSocketChannel();
         System.out.println("start nio server and bind port 8888");
@@ -76,6 +76,11 @@ public class Server {
             }
             ready = selector.select();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Server server = new Server();
+        server.start();
     }
 
 }

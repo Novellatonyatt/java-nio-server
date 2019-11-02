@@ -50,7 +50,7 @@ public class ReactorServer {
         }
     }
 
-    private void open() throws IOException {
+    private void start() throws IOException {
         Selector selector = Selector.open();
         ServerSocketChannel serverSocketChannel = createNIOServerSocketChannel();
         System.out.println("start nio server and bind port 8888");
@@ -85,7 +85,7 @@ public class ReactorServer {
 
     public static void main(String[] args) throws IOException {
         ReactorServer reactorServer = new ReactorServer();
-        reactorServer.open();
+        reactorServer.start();
     }
 
 }
