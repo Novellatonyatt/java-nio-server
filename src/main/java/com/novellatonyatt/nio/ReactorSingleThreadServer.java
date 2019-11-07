@@ -10,17 +10,37 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
- * @Auther: Zhuang HaoTang
+ * @Author: Zhuang HaoTang
  * @Date: 2019/10/26 16:35
  * @Description:
  */
-public class Server {
+public class ReactorSingleThreadServer {
 
+    private void start() throws IOException {
+        Selector selector = Selector.open();
+        ServerSocketChannel serverSocketChannel = createNIOServerSocketChannel();
+        System.out.println("start nio server and bind port 8888");
+        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        int ready = selector.select();
+        while (ready > 0) {
+            System.out.println("ready channel count " + ready);
+            Set<SelectionKey> selectionKeySet = selector.selectedKeys();
+            for (Iterator<SelectionKey> iterator = selectionKeySet.iterator(); iterator.hasNext(); ) {
+                SelectionKey selectionKey = iterator.next();
+                if (selectionKey.isAcceptable()) {
+                    System.out.println("acceptable");
+                    acceptHandler(selectionKey);
+                } else if (selectionKey.isReadable()) {
+                    System.out.println("readable");
+                    readHandler(selectionKey);
+                }
+                iterator.remove();
+            }
+            ready = selector.select();
+        }
+    }
 
     private ServerSocketChannel createNIOServerSocketChannel() throws IOException {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
@@ -54,32 +74,8 @@ public class Server {
         }
     }
 
-    private void start() throws IOException {
-        Selector selector = Selector.open();
-        ServerSocketChannel serverSocketChannel = createNIOServerSocketChannel();
-        System.out.println("start nio server and bind port 8888");
-        serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
-        int ready = selector.select();
-        while (ready > 0) {
-            System.out.println("ready channel count " + ready);
-            Set<SelectionKey> selectionKeySet = selector.selectedKeys();
-            for (Iterator<SelectionKey> iterator = selectionKeySet.iterator(); iterator.hasNext(); ) {
-                SelectionKey selectionKey = iterator.next();
-                if (selectionKey.isAcceptable()) {
-                    System.out.println("acceptable");
-                    acceptHandler(selectionKey);
-                } else if (selectionKey.isReadable()) {
-                    System.out.println("readable");
-                    readHandler(selectionKey);
-                }
-                iterator.remove();
-            }
-            ready = selector.select();
-        }
-    }
-
     public static void main(String[] args) throws IOException {
-        Server server = new Server();
+        ReactorSingleThreadServer server = new ReactorSingleThreadServer();
         server.start();
     }
 

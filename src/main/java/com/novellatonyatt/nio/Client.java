@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
 /**
- * @Auther: Zhuang HaoTang
+ * @Author: Zhuang HaoTang
  * @Date: 2019/10/26 16:36
  * @Description:
  */
@@ -21,7 +21,7 @@ public class Client {
         byteBuffer.put(message.getBytes());
         byteBuffer.flip();
         socketChannel.write(byteBuffer);
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         ByteBuffer byteBuffer1 = ByteBuffer.allocate("wo".getBytes().length).put("wo".getBytes());
         byteBuffer1.flip();
         socketChannel.write(byteBuffer1);
