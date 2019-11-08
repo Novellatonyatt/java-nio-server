@@ -66,16 +66,7 @@ public class MainSubReactorMultiThreadServer {
             final SelectionKey selectionKey = Iterables.getOnlyElement(selectionKeySet);
             if (selectionKey.isAcceptable()) {
                 System.out.println("acceptable");
-                eventHandlerPool.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            acceptHandler(selectionKey, subSelector);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
+                acceptHandler(selectionKey, subSelector);
                 selectionKeySet.clear();
             }
             mainSelector.select();
@@ -102,7 +93,6 @@ public class MainSubReactorMultiThreadServer {
                     iterator.remove();
                 }
             }
-//            Thread.sleep(10); // 没找到好方案,留一些时间给register
             subSelector.select();
         }
     }

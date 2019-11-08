@@ -35,16 +35,7 @@ public class ReactorMultiThreadServer {
                 final SelectionKey selectionKey = iterator.next();
                 if (selectionKey.isAcceptable()) {
                     System.out.println("acceptable");
-                    eventHandlerPool.submit(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                acceptHandler(selectionKey);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    acceptHandler(selectionKey);
                 } else if (selectionKey.isReadable()) {
                     System.out.println("readable");
                     eventHandlerPool.submit(new Runnable() {
@@ -56,7 +47,6 @@ public class ReactorMultiThreadServer {
                 }
                 iterator.remove();
             }
-//            Thread.sleep(10); // 没找到好方案,留一些时间给register
             selector.select();
         }
     }
@@ -74,7 +64,6 @@ public class ReactorMultiThreadServer {
         SocketChannel socketChannel = serverSocketChannel.accept();
         if (socketChannel != null) {
             socketChannel.configureBlocking(false);
-            selector.wakeup(); // 往Selector注册Channel时,Selector要处于非阻塞状态
             socketChannel.register(selector, SelectionKey.OP_READ);
             System.out.println("accept client connection " + socketChannel.getLocalAddress());
         }
