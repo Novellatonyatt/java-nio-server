@@ -62,8 +62,8 @@ public class MainSubReactorMultiThreadServer {
         serverSocketChannel.register(mainSelector, SelectionKey.OP_ACCEPT);
         mainSelector.select();
         for (; ; ) {
-            final Set<SelectionKey> selectionKeySet = mainSelector.selectedKeys();
-            final SelectionKey selectionKey = Iterables.getOnlyElement(selectionKeySet);
+            Set<SelectionKey> selectionKeySet = mainSelector.selectedKeys();
+            SelectionKey selectionKey = Iterables.getOnlyElement(selectionKeySet);
             if (selectionKey.isAcceptable()) {
                 System.out.println("acceptable");
                 acceptHandler(selectionKey, subSelector); // 单线程同步处理接收就绪
