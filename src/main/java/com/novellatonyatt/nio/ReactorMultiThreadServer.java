@@ -29,13 +29,13 @@ public class ReactorMultiThreadServer {
         System.out.println("start nio server and bind port 8888");
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
         selector.select();
-        for (;;) {
+        for (; ; ) {
             Set<SelectionKey> selectionKeySet = selector.selectedKeys();
             for (Iterator<SelectionKey> iterator = selectionKeySet.iterator(); iterator.hasNext(); ) {
                 final SelectionKey selectionKey = iterator.next();
                 if (selectionKey.isAcceptable()) {
                     System.out.println("acceptable");
-                    acceptHandler(selectionKey);
+                    acceptHandler(selectionKey); // 单线程同步处理接收就绪
                 } else if (selectionKey.isReadable()) {
                     System.out.println("readable");
                     eventHandlerPool.submit(new Runnable() {
